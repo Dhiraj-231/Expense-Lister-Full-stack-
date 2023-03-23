@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NavBar from "./components/AppBar.js"
 
 export default function App() {
   const [form, setForm] = useState({
@@ -44,6 +45,7 @@ export default function App() {
   };
   return (
     <div>
+       <NavBar/>
       <form onSubmit={submitHandler}>
         <input
           placeholder="Enter the Transction amount"
