@@ -14,7 +14,7 @@ export default function NavBar() {
         <Toolbar>
             
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Expenser
+            Expense Tracker
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
