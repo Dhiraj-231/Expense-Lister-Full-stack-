@@ -1,10 +1,10 @@
+import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import NavBar from "./components/NavBar.jsx"
+import NavBar from "./components/NavBar.jsx";
 import Record from "./components/Record.jsx";
 import TransactionForm from "./components/TransactionForm.jsx";
 
 export default function App() {
-
   const [trans, setTrans] = useState([]);
 
   useEffect(() => {
@@ -19,11 +19,11 @@ export default function App() {
 
   return (
     <div>
-       <NavBar/>
-       <TransactionForm fetchTransctions={fetchTransctions}/>
-      <br />
-      <hr />
-      <Record trans={trans}/>
+      <NavBar />
+      <Container>
+        <TransactionForm fetchTransctions={fetchTransctions} />
+        <Record trans={trans} fetchTransctions={fetchTransctions} />
+      </Container>
     </div>
   );
 }

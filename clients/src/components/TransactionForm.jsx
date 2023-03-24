@@ -9,8 +9,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Typography } from "@mui/material";
 
-export default function TransactionForm({fetchTransctions}) {
+export default function TransactionForm({ fetchTransctions }) {
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
   const handleChange = (newValue) => {
     setForm({ ...form, Date: newValue });
@@ -39,13 +40,13 @@ export default function TransactionForm({fetchTransctions}) {
         Detail: "",
         Date: "",
       });
-        fetchTransctions();
+      fetchTransctions();
     }
   };
   return (
     <Card sx={{ minWidth: 275, marginTop: 3 }}>
+      <Typography variant="h6">Add New Transactions</Typography>
       <CardContent>
-
         <form onSubmit={SubmitHandler}>
           <TextField
             sx={{ marginRight: 5 }}
