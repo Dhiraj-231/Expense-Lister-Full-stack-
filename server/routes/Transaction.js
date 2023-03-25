@@ -25,6 +25,18 @@ router.delete("/:id",async(req,res)=>{
     res.status(200).json({
         message:"Success"
     })
+});
+
+router.patch("/:id",async(req,res)=>{
+    const {Amount,Detail,Date}=req.body;
+   const transaction= await Transaction.findOneAndUpdate({_id:req.params.id},{
+    Amount,
+    Detail,
+    Date
+   });
+   res.status(200).json({
+    message:"Success",
+   });
 })
 
 export default router;

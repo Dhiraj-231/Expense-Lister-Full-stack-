@@ -10,8 +10,9 @@ import { IconButton, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
 
-export default function Record({ trans,fetchTransctions }) {
+export default function Record({ trans,fetchTransctions,setEditTrans }) {
   const ClickHandler = async (_id) => {
     if (!window.confirm("Are you want to Delete")) return;
     const res = await fetch(`http://localhost:8000/transaction/${_id}`, {
@@ -24,6 +25,9 @@ export default function Record({ trans,fetchTransctions }) {
       fetchTransctions();
     }
   };
+  let FormatDate=(date)=>{
+    return dayjs(date).format("DD MMM ,YY");
+  }
   return (
     <>
       <Typography variant="h6">List of Transaction</Typography>
@@ -42,9 +46,12 @@ export default function Record({ trans,fetchTransctions }) {
               <TableRow key={data._id}>
                 <TableCell align="center">{data.Detail}</TableCell>
                 <TableCell align="center">{data.Amount}</TableCell>
-                <TableCell align="center">{data.Date}</TableCell>
+                <TableCell align="center">{FormatDate(data.Date)}</TableCell>
                 <TableCell align="center">
-                  <IconButton aria-label="edit" color="primary">
+                  <IconButton 
+                  aria-label="edit"
+                  onClick={()=>setEditTrans(data)}
+                   color="primary">
                     <EditIcon />
                   </IconButton>
                   <IconButton

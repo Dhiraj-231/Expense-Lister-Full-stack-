@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import dayjs from "dayjs";
@@ -11,18 +11,29 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Typography } from "@mui/material";
 
-export default function TransactionForm({ fetchTransctions }) {
+export default function TransactionForm({ fetchTransctions, EditTrans }) {
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
   const handleChange = (newValue) => {
     setForm({ ...form, Date: newValue });
   };
   const [form, setForm] = React.useState({
-    Amount: 0,
+    Amount: undefined,
     Detail: "",
     Date: "",
   });
+
+  useEffect(() => {
+    if (EditTrans !== {}) {
+      setForm(EditTrans);
+    }
+  }, [EditTrans]);
+
   const SubmitHandler = async (e) => {
     e.preventDefault();
+    EditTrans.Amount === undefined ? Create() : Update();
+  };
+
+  const Create = async () => {
     const res = await fetch("http://localhost:8000/transaction", {
       method: "POST",
       body: JSON.stringify(form),
@@ -32,17 +43,42 @@ export default function TransactionForm({ fetchTransctions }) {
     });
     const data = await res.json();
     if (res.ok) {
-      toast.success("Data is saved", {
+      toast.success("Expense is Added to list", {
         position: toast.POSITION.TOP_CENTER,
       });
       setForm({
-        Amount: 0,
+        Amount: "",
         Detail: "",
         Date: "",
       });
       fetchTransctions();
     }
   };
+
+  const Update = async () => {
+    const res = await fetch(
+      `http://localhost:8000/transaction/${EditTrans._id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(form),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
+    if (res.ok) {
+      toast.success("Expense is Updated to list", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      setForm({
+        Amount: "",
+        Detail: "",
+        Date: "",
+      });
+      fetchTransctions();
+    }
+  };
+
   return (
     <Card sx={{ minWidth: 275, marginTop: 3 }}>
       <Typography variant="h6">Add New Transactions</Typography>
@@ -75,9 +111,16 @@ export default function TransactionForm({ fetchTransctions }) {
               renderInput={(params) => <TextField size="small" {...params} />}
             />
           </LocalizationProvider>
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
+          {EditTrans.Amount !== undefined && (
+            <Button type="submit" variant="contained">
+              Update
+            </Button>
+          )}
+          {EditTrans.Amount === undefined && (
+            <Button type="submit" variant="contained">
+              Submit
+            </Button>
+          )}
         </form>
       </CardContent>
     </Card>
