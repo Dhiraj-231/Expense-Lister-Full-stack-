@@ -3,7 +3,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -11,9 +11,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { toast } from "react-toastify";
 export default function Register() {
+  const navigate = useNavigate();
   const [form, setForm] = React.useState({
     FirstName: "",
-    LastName:"",
+    LastName: "",
     email: "",
     password: "",
   });
@@ -26,17 +27,27 @@ export default function Register() {
         "content-type": "application/json",
       },
     });
-    if(res.ok){
-      toast.info("Register successfully",{
-        position:toast.POSITION.TOP_CENTER
+    if (res.ok) {
+      toast.info("Register successfully", {
+        position: toast.POSITION.TOP_CENTER,
       });
+      setForm({
+        FirstName: "",
+        LastName: "",
+        email: "",
+        password: "",
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 6000);
+    } else {
+      toast.dark("User already exist", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 6000);
     }
-    setForm({
-      FirstName:"",
-      LastName:"",
-      email:"",
-      password:"",
-    });
   };
 
   return (
@@ -68,7 +79,9 @@ export default function Register() {
                 label="First Name"
                 autoFocus
                 value={form.FirstName}
-                onChange={(e)=>setForm({...form,FirstName:e.target.value})}
+                onChange={(e) =>
+                  setForm({ ...form, FirstName: e.target.value })
+                }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -80,7 +93,7 @@ export default function Register() {
                 name="lastName"
                 autoComplete="family-name"
                 value={form.LastName}
-                onChange={(e)=>setForm({...form,LastName:e.target.value})}
+                onChange={(e) => setForm({ ...form, LastName: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -92,7 +105,7 @@ export default function Register() {
                 name="email"
                 autoComplete="email"
                 value={form.email}
-                onChange={(e)=>setForm({...form,email:e.target.value})}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,7 +118,7 @@ export default function Register() {
                 id="password"
                 autoComplete="new-password"
                 value={form.password}
-                onChange={(e)=>setForm({...form,password:e.target.value})}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
             </Grid>
           </Grid>
