@@ -11,8 +11,11 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useDispatch } from "react-redux";
+import { getUser } from "../stores/auth.js";
 
 export default function Login() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,16 +24,17 @@ export default function Login() {
       email: data.get("email"),
       password: data.get("password"),
     };
-    const res = await fetch("http://localhost:8000/User/login", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/User/login`, {
       method: "POST",
       body: JSON.stringify(form),
       headers: {
         "content-type": "application/json",
       },
     });
-    const { token } = await res.json();
+    const { token, user } = await res.json();
     if (res.ok) {
       Cookies.set("token", token);
+      dispatch(getUser(user));
       toast.success("Login successfully", {
         position: toast.POSITION.TOP_CENTER,
       });

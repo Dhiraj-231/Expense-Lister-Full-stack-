@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 export default function Record({ trans,fetchTransctions,setEditTrans }) {
   const ClickHandler = async (_id) => {
     if (!window.confirm("Are you want to Delete")) return;
-    const res = await fetch(`http://localhost:8000/transaction/${_id}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/transaction/${_id}`, {
       method: "DELETE",
     });
     if (res.ok) {

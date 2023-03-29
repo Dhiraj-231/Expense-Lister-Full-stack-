@@ -42,13 +42,14 @@ router.post("/login", async (req, res) => {
     });
   }
   const payLoad = {
-    username:email,
+    username: email,
     _id: userExist._id,
   };
   const token = jwt.sign(payLoad, "Dhashu");
   res.status(202).json({
     message: "Successfully logged in",
     token,
+    user: userExist,
   });
 });
 

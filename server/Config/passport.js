@@ -1,13 +1,15 @@
 import pkg from "passport-jwt";
 import User from "../models/user.js";
+import dotenv from "dotenv";
+dotenv.config();
 const JwtStrategy = pkg.Strategy;
 const ExtractJwt = pkg.ExtractJwt;
 let opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = "Dhashu";
+opts.secretOrKey = process.env.JWT_SECRET;
 export default (passport) => {
   passport.use(new JwtStrategy(opts,async(jwt_payload,done)=>{
-     const user= await User.findOne({id: jwt_payload.sub});
+     const user= await User.findById({_id: jwt_payload._id});
      try {
         if(user){
             return done(null,user)

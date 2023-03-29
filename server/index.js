@@ -5,7 +5,10 @@ import TransactionRouter from "./routes/Transaction.js";
 import UserRouter from "./routes/User.js";
 import dataBaseConnection from "./DataBase/dataBaseConnection.js";
 import passport from "passport";
-import passportConfig from "./Config/passport.js"
+import passportConfig from "./Config/passport.js";
+import Auth from "./routes/Auth.js"
+import dotenv from "dotenv";
+dotenv.config()
 const app = express();
 dataBaseConnection();
 console.log("Connected successfully");
@@ -15,6 +18,7 @@ app.use(cors());
 app.use(passport.initialize());
 passportConfig(passport)
 app.use("/User", UserRouter);
+app.use("/Auth",Auth)
 app.use("/transaction", TransactionRouter);
 
 app.get("/", (req, res) => {

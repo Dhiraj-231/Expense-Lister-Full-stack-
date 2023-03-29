@@ -14,13 +14,12 @@ export default function Home() {
 
   async function fetchTransctions() {
     const token=Cookies.get('token');
-    console.log("hii")
-    const res = await fetch(`http://localhost:8000/transaction`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/transaction`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("HII")
+    
     const { data } = await res.json();
     setTrans(data);
   }

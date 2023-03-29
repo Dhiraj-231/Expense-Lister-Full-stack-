@@ -7,16 +7,20 @@ import Button from "@mui/material/Button";
 import { NavLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { logout } from "../stores/auth.js";
 
 export default function NavBar() {
-  const navigate=useNavigate();
-  const logout=()=>{
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const _logout = () => {
     Cookies.remove("token");
-    toast.info("Logout Successfully ",{
-      position:toast.POSITION.BOTTOM_RIGHT
+    dispatch(logout());
+    toast.info("Logout Successfully ", {
+      position: toast.POSITION.BOTTOM_RIGHT,
     });
     navigate("/login");
-  }
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -38,7 +42,9 @@ export default function NavBar() {
           >
             <Button color="inherit">Login</Button>
           </NavLink>
-            <Button onClick={logout} color="inherit">Logout</Button>
+          <Button onClick={_logout} color="inherit">
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>

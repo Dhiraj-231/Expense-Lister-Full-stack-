@@ -1,37 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes.js";
 import "./index.css";
-import App from "./App";
-import Home from "./Pages/Home";
-import Login from "./Pages/Login";
 import { ToastContainer } from "react-toastify";
-import Register from "./Pages/Register";
-
-const router = createBrowserRouter([
-  {
-    element: <App />,
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-    ],
-  },
-]);
+import { Provider } from "react-redux";
+import store from "./stores/index.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+
+  <Provider store={store}>
     <RouterProvider router={router} />
     <ToastContainer />
-  </React.StrictMode>
+  </Provider>
+
 );

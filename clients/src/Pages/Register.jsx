@@ -20,7 +20,7 @@ export default function Register() {
   });
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const res = await fetch("http://localhost:8000/User/register", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/User/register`, {
       method: "POST",
       body: JSON.stringify(form),
       headers: {
