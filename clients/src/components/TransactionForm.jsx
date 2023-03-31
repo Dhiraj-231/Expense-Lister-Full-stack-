@@ -9,9 +9,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Typography } from "@mui/material";
-
+import { useSelector } from "react-redux";
+import { Autocomplete, Typography } from "@mui/material";
+import Cookies from "js-cookie";
+import { Box, height } from "@mui/system";
 export default function TransactionForm({ fetchTransctions, EditTrans }) {
+  const {categories}=useSelector(state=>state.auth.user);
+  const token = Cookies.get("token");
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
   const handleChange = (newValue) => {
     setForm({ ...form, Date: newValue });
@@ -19,9 +23,9 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
   const [form, setForm] = React.useState({
     Amount: undefined,
     Detail: "",
+    Category_id:"",
     Date: "",
   });
-
   useEffect(() => {
     if (EditTrans !== {}) {
       setForm(EditTrans);
@@ -33,12 +37,16 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
     EditTrans.Amount === undefined ? Create() : Update();
   };
 
+  function getCategoryName() {
+    return (categories.find(category=>category._id===form.Category_id)?? "")
+  }
   const Create = async () => {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/transaction`, {
       method: "POST",
       body: JSON.stringify(form),
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
     const data = await res.json();
@@ -49,6 +57,7 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
       setForm({
         Amount: "",
         Detail: "",
+        Category_id: "",
         Date: "",
       });
       fetchTransctions();
@@ -63,6 +72,7 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
         body: JSON.stringify(form),
         headers: {
           "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -73,17 +83,19 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
       setForm({
         Amount: "",
         Detail: "",
+        Category_id: "",
         Date: "",
       });
       fetchTransctions();
     }
   };
 
+
   return (
     <Card sx={{ minWidth: 275, marginTop: 3 }}>
       <Typography variant="h6">Add New Transactions</Typography>
       <CardContent>
-        <form onSubmit={SubmitHandler}>
+        <Box component="form" onSubmit={SubmitHandler} sx={{ display: "flex" }}>
           <TextField
             sx={{ marginRight: 5 }}
             id="outlined-basic"
@@ -105,12 +117,24 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               label="Date desktop"
-              sx={{ marginRight: 5 }}
+              sx={{ width: 200, height: 50, marginRight: 5 }}
               inputFormat="MM/DD/YYYY"
               onChange={handleChange}
               renderInput={(params) => <TextField size="small" {...params} />}
             />
           </LocalizationProvider>
+          <Autocomplete
+            value={getCategoryName()}
+            onChange={(event, newValue) => {
+              setForm({ ...form, Category_id: newValue._id });
+            }}
+            id="controllable-states-demo"
+            options={categories}
+            sx={{ width: 200, height: 50, marginRight: 5 }}
+            renderInput={(params) => (
+              <TextField s {...params} label="categories" />
+            )}
+          />
           {EditTrans.Amount !== undefined && (
             <Button type="submit" variant="contained">
               Update
@@ -121,7 +145,7 @@ export default function TransactionForm({ fetchTransctions, EditTrans }) {
               Submit
             </Button>
           )}
-        </form>
+        </Box>
       </CardContent>
     </Card>
   );

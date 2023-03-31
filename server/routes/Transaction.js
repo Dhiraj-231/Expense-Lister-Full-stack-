@@ -1,9 +1,8 @@
 import { Router } from "express";
-import passport from "passport";
-import * as trans from "../controller/transactionController.js"
+import * as trans from "../controllers/transactionController.js"
 const router = Router();
 
-router.get('/',passport.authenticate("jwt",{session:false}),trans.index);
+router.get('/',trans.index);
 
 router.post("/", trans.create);
 

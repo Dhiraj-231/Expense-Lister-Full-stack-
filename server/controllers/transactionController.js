@@ -1,7 +1,7 @@
 import Transaction from "../models/transaction.js";
 
 export const index = async (req, res) => {
-  const transaction = await Transaction.find({}).sort({ createdAt: -1 });
+  const transaction = await Transaction.find({user_id:req.user._id}).sort({ createdAt: -1 });
   res.json({ data: transaction });
 };
 
@@ -10,6 +10,8 @@ export const create = async (req, res) => {
   const transaction = new Transaction({
     Amount,
     Detail,
+    user_id:req.user._id,
+    Category_id:req.body.Category_id,
     Date,
   });
   const data = await transaction.save();

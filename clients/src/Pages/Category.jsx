@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,23 +7,29 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { IconButton, Typography } from "@mui/material";
+import { Container, IconButton, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
-export default function Record({ trans, fetchTransctions, setEditTrans }) {
+import { getUser } from "../stores/auth";
+import CategoryForm from "../components/CategoryForm";
+export default function Category() {
   const token = Cookies.get("token");
+  const [editCategory,setEditCategory]=React.useState({})
   const user = useSelector((state) => state.auth.user);
-  function categoryName(id) {
-    const ou = user.categories.find((data) => data._id == id);
-    return ou ? ou.label:"NA";
+  const dispatch = useDispatch();
+  let FormatDate = (date) => {
+    return dayjs(date).format("DD MMM ,YY");
+  };
+
+  function setEditCatgory(category) {
+    setEditCategory(category)
   }
-  const ClickHandler = async (_id) => {
-    if (!window.confirm("Are you want to Delete")) return;
+  const Remove = async (_id) => {
     const res = await fetch(
-      `${process.env.REACT_APP_API_URL}/transaction/${_id}`,
+      `${process.env.REACT_APP_API_URL}/category/${_id}`,
       {
         method: "DELETE",
         headers: {
@@ -31,43 +37,40 @@ export default function Record({ trans, fetchTransctions, setEditTrans }) {
         },
       }
     );
+
     if (res.ok) {
-      toast.error("Expense is Deleted", {
-        position: toast.POSITION.TOP_CENTER,
+      const _user = {
+        ...user,
+        categories: user.categories.filter((category) => category._id != _id),
+      };
+      dispatch(getUser({ user: _user }));
+      toast.success("Deleted successfully", {
+        position: toast.POSITION.TOP_RIGHT,
       });
-      fetchTransctions();
     }
   };
-  let FormatDate = (date) => {
-    return dayjs(date).format("DD MMM ,YY");
-  };
   return (
-    <>
-      <Typography variant="h6">List of Transaction</Typography>
+    <Container>
+      <CategoryForm EditCategory={editCategory}/>
+      <Typography variant="h6">List of Categories</Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Details</TableCell>
-              <TableCell align="center">Amount</TableCell>
-              <TableCell align="center">Category</TableCell>
-              <TableCell align="center">Date</TableCell>
+              <TableCell align="center">Label</TableCell>
+              <TableCell align="center">Icon</TableCell>
               <TableCell align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {trans.map((data) => (
+            {user.categories.map((data) => (
               <TableRow key={data._id}>
-                <TableCell align="center">{data.Detail}</TableCell>
-                <TableCell align="center">{data.Amount}</TableCell>
-                <TableCell align="center">
-                  {categoryName(data.Category_id)}
-                </TableCell>
-                <TableCell align="center">{FormatDate(data.Date)}</TableCell>
+                <TableCell align="center">{data.label}</TableCell>
+                <TableCell align="center">{data.icon}</TableCell>
                 <TableCell align="center">
                   <IconButton
                     aria-label="edit"
-                    onClick={() => setEditTrans(data)}
+                    onClick={(e) => setEditCatgory(e.target.value)}
                     color="primary"
                   >
                     <EditIcon />
@@ -75,7 +78,7 @@ export default function Record({ trans, fetchTransctions, setEditTrans }) {
                   <IconButton
                     aria-label="delete"
                     color="warning"
-                    onClick={() => ClickHandler(data._id)}
+                    onClick={() => Remove(data._id)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -85,6 +88,6 @@ export default function Record({ trans, fetchTransctions, setEditTrans }) {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Container>
   );
 }

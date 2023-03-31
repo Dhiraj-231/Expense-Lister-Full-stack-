@@ -7,6 +7,7 @@ const UserSchema = new Schema({
   LastName: String,
   email: String,
   password: String,
+  categories: [{ label: String, icon: String }],
   createdAt: { type: Date, default: Date.now },
 });
 

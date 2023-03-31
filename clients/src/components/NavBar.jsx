@@ -4,15 +4,16 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../stores/auth.js";
 
 export default function NavBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const _logout = () => {
     Cookies.remove("token");
     dispatch(logout());
@@ -30,21 +31,35 @@ export default function NavBar() {
               Expense Tracker
             </NavLink>
           </Typography>
-          <NavLink
-            to="/register"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <Button color="inherit">Register</Button>
-          </NavLink>
-          <NavLink
-            to="/login"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <Button color="inherit">Login</Button>
-          </NavLink>
-          <Button onClick={_logout} color="inherit">
-            Logout
-          </Button>
+          {isAuthenticated && (
+            <>
+              <NavLink
+                to="/category"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Button color="inherit">Categories</Button>
+              </NavLink>
+              <Button onClick={_logout} color="inherit">
+                Logout
+              </Button>
+            </>
+          )}
+          {!isAuthenticated && (
+            <>
+              <NavLink
+                to="/register"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Button color="inherit">Register</Button>
+              </NavLink>
+              <NavLink
+                to="/login"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Button color="inherit">Login</Button>
+              </NavLink>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

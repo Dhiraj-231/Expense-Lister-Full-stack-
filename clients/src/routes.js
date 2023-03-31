@@ -5,6 +5,7 @@ import TokenAuth from "./utils/TokenAuth.jsx";
 import Login from "./Pages/Login";
 import { createBrowserRouter } from "react-router-dom";
 import Guest from "./utils/Guest";
+import Category from "./Pages/Category";
 export default createBrowserRouter([
   {
     element: <App />,
@@ -31,6 +32,14 @@ export default createBrowserRouter([
           <Guest>
             <Login />
           </Guest>
+        ),
+      },
+      {
+        path: "/category",
+        element: (
+          <TokenAuth>
+            <Category />
+          </TokenAuth>
         ),
       },
     ],
